@@ -15,13 +15,7 @@ terraform {
 
   required_version = "~> 1.0"
 
-  #  backend "s3" {
-  #    bucket = "S3-bucket-for-state-files" // eg: bcgov-ecf-billing-reports-tfrb-1234567891-ca-central-1
-  #    key    = "tfrb-aws/operations/terraform.tfstate"
-  #    region = "ca-central-1"
-  #
-  #    dynamodb_table = "bcgov-ecf-billing-reports-tfrb-state-locks"
-  #  }
+  backend "s3" {}
 }
 
 provider "aws" {
@@ -302,7 +296,7 @@ resource "aws_ecs_task_definition" "billing_reports_ecs_task" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   runtime_platform {
     operating_system_family = "LINUX"
-    cpu_architecture        = "ARM64"
+#    cpu_architecture        = "ARM64" // Used when testing deployment from Local ARM64 based device
   }
   container_definitions = jsonencode([{
     name       = "${local.app_name}-ecs-container-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}"
